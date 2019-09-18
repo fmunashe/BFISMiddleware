@@ -9,6 +9,7 @@ use Alert;
 use App\Services\RetrieveToken;
 use App\Services\CheckData;
 use App\Batch;
+use App\Record;
 class DataController extends Controller
 {
     protected $dataservice;
@@ -28,16 +29,19 @@ class DataController extends Controller
             Alert::success('success', session('success_message'))->persistent('Dismiss');
         }
         $notification=$this->dataservice->checkNotifications();
-//        $batch=new Batch();
-//        for($i=0;$i<count($notification);$i++) {
-//                $batch->batch_split_id = $notification->msgId;
-//                $batch->date = $notify->creDtTm;
-//                $batch->transactions = $notify->nbOfTxs;
-//                $batch->total = $notify->ctrlSum;
-//                $batch->initiator = $notify->initgPty->nm;
-//                $batch->payment_method = $notify->pmtInf->pmtMtd;
-//                $batch->save();
-//        }
+            foreach ($notification as $i) {
+                $batch = new Batch();
+                $exists = Batch::where('batch_split_id', $i->msgId)->exists();
+                if (!$exists) {
+                    $batch->batch_split_id = $i->msgId;
+                    $batch->date = $i->creDtTm;
+                    $batch->transactions = $i->nbOfTxs;
+                    $batch->total = $i->ctrlSum;
+                    $batch->initiator = $i->initgPty->nm;
+                    $batch->payment_method = $i->pmtInf->pmtMtd;
+                    $batch->save();
+                }
+            }
         return view('production.home',compact('notification'));
     }
 
@@ -78,12 +82,33 @@ class DataController extends Controller
     public function show($id)
     {
         $records = $this->dataservice->viewRecords($id);
-        $path="\C:/zip/Salary".Carbon::now()."txt";
         $paymentInfo = $records->pmtInf;
         if ($paymentInfo->pmtMtd == "TRF") {
             $header = $records->grpHdr;
             $body = $records->pmtInf->cdtTrfTxInf;
-            File::put($path,);
+
+            foreach ($body as $i) {
+                $record = new Record();
+                $exists = Record::where('record_id', $i->pmtId->endToEndId)->exists();
+                if (!$exists) {
+                    $record->batch_split_id = $header->msgId;
+                    $record->payment_info_id = $paymentInfo->pmtInfId;
+                    $record->record_id = $i->pmtId->endToEndId;
+                    $record->initiator = $header->initgPty->nm;
+                    $record->debiting_agent = $paymentInfo->dbtrAgt->finInstnId->bic;
+                    $record->debit_account = $paymentInfo->dbtrAcct->id->iban;
+                    $record->amount = $i->amt->instdAmt->value;
+                    $record->currency = $i->amt->instdAmt->ccy;
+                    $record->payment_method = $paymentInfo->pmtMtd;
+                    $record->beneficiary_name = $i->cdtr->nm;
+                    $record->beneficiary_account = $i->cdtrAcct->id->iban;
+                    $record->crediting_agent = $i->cdtrAgt->finInstnId->bic;
+                    $record->reference = $i->rmtInf->strd->cdtrRefInf->ref;
+                    $record->save();
+                }
+            }
+
+
             return view('production.records', compact('body', 'header', 'paymentInfo'));
         }
        return abort(404);
