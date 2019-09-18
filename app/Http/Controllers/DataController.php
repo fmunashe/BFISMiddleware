@@ -10,6 +10,8 @@ use App\Services\RetrieveToken;
 use App\Services\CheckData;
 use App\Batch;
 use App\Record;
+use Illuminate\Support\Facades\Storage;
+
 class DataController extends Controller
 {
     protected $dataservice;
@@ -31,6 +33,7 @@ class DataController extends Controller
         $notification=$this->dataservice->checkNotifications();
             foreach ($notification as $i) {
                 $batch = new Batch();
+                $filename=$i->msgId."-".today()."-Salary.txt";
                 $exists = Batch::where('batch_split_id', $i->msgId)->exists();
                 if (!$exists) {
                     $batch->batch_split_id = $i->msgId;
@@ -40,6 +43,8 @@ class DataController extends Controller
                     $batch->initiator = $i->initgPty->nm;
                     $batch->payment_method = $i->pmtInf->pmtMtd;
                     $batch->save();
+                    $contents=$i->msgId.",".$i->creDtTm.",".$i->nbOfTxs.",".$i->ctrlSum.",".$i->initgPty->nm.",".$i->pmtInf->pmtMtd;
+                    Storage::disk('local')->put($filename,$contents);
                 }
             }
         return view('production.home',compact('notification'));
