@@ -47,6 +47,10 @@ return [
             'driver' => 'local',
             'root' => storage_path('app'),
         ],
+        'CDrive' => [
+            'driver' => 'local',
+            'root' => 'C:\Users\fzihove\Desktop\Salary',
+        ],
 
         'public' => [
             'driver' => 'local',

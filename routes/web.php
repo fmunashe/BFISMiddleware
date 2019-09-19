@@ -20,3 +20,7 @@ Auth::routes();
 Route::get('/home', 'DataController@index')->name('home');
 Route::get('/home/{id}','DataController@show')->name('viewRecords');
 Route::get('/generateFile/{id}','DataController@generateFile')->name('generateFile');
+Route::get('/debitAccounts','DebitAccountController@index')->name('debitAccounts');
+Route::get('/createDebitAccount','DebitAccountController@create')->name('createDebitAccount');
+Route::post('/createDebitAccount','DebitAccountController@store')->name('createDebitAccount');
+Route::get('/removeDebitAccount','DebitAccountController@destroy')->name('removeDebitAccount');

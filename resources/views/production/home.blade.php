@@ -34,7 +34,7 @@
                 <td>{{$notice->ctrlSum}}</td>
                 <td>{{$notice->initgPty->nm}}</td>
                 <td>{{$notice->pmtInf->pmtMtd}}</td>
-                <td><a href="{{route('viewRecords',['id'=>$notice->msgId])}}"><span class="btn btn-sm btn-success fa fa-eye"></span></a></td>
+                <td><a href="{{route('viewRecords',['id'=>$notice->msgId])}}"><span class="btn btn-sm btn-success fa fa-eye"></span></a><a href="{{route('generateFile',['id'=>$notice->msgId])}}" class="btn btn-info btn-sm fa fa-arrow-circle-right">&nbsp;Process File</a></td>
             </tr>
                 @endforeach
             </tbody>

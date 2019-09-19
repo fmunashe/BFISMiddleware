@@ -18,8 +18,8 @@ public function getToken(){
             'Authorization' => $authorisation
         ],
         'form_params' => [
-            'username' => 'ZB BANK',
-            'password' => '34578901234',
+            'username' => $username,
+            'password' => $password,
             'grant_type' => $grant_type
         ]
     ])->getBody()->getContents();

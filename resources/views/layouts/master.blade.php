@@ -63,14 +63,14 @@
                   <li><a><i class="fa fa-home"></i> Home <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                       <li><a href="{{route('home')}}">Dashboard</a></li>
-                      <li><a href="index2.html">Dashboard2</a></li>
+                      <li><a href="{{route('debitAccounts')}}">Suspense Accounts</a></li>
                       <li><a href="index3.html">Dashboard3</a></li>
                     </ul>
                   </li>
-                  <li><a><i class="fa fa-edit"></i> Forms <span class="fa fa-chevron-down"></span></a>
+                  <li><a><i class="fa fa-edit"></i> Accounts <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                      <li><a href="form.html">General Form</a></li>
-                      <li><a href="form_advanced.html">Advanced Components</a></li>
+                      <li><a href="{{route('debitAccounts')}}">Suspense Accounts</a></li>
+                      <li><a href="{{route('createDebitAccount')}}">New Suspense Account</a></li>
                       <li><a href="form_validation.html">Form Validation</a></li>
                       <li><a href="form_wizards.html">Form Wizard</a></li>
                       <li><a href="form_upload.html">Form Upload</a></li>

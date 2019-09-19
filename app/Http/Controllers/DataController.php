@@ -2,11 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Carbon\Carbon;
-use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Alert;
-use App\Services\RetrieveToken;
 use App\Services\CheckData;
 use App\Batch;
 use App\Record;
@@ -33,7 +30,7 @@ class DataController extends Controller
         $notification=$this->dataservice->checkNotifications();
             foreach ($notification as $i) {
                 $batch = new Batch();
-                $filename=$i->msgId."-".today()."-Salary.txt";
+                $filename=$i->msgId."-Salary.txt";
                 $exists = Batch::where('batch_split_id', $i->msgId)->exists();
                 if (!$exists) {
                     $batch->batch_split_id = $i->msgId;
@@ -43,9 +40,13 @@ class DataController extends Controller
                     $batch->initiator = $i->initgPty->nm;
                     $batch->payment_method = $i->pmtInf->pmtMtd;
                     $batch->save();
-                    $contents=$i->msgId.",".$i->creDtTm.",".$i->nbOfTxs.",".$i->ctrlSum.",".$i->initgPty->nm.",".$i->pmtInf->pmtMtd;
-                    Storage::disk('local')->put($filename,$contents);
+
+                   $contents=$i->msgId.",".$i->creDtTm.",".$i->nbOfTxs.",".$i->ctrlSum.",".$i->initgPty->nm.",".$i->pmtInf->pmtMtd;
+                    //$file = ($filename) ? Storage::disk('CDrive')->append($filename,$contents):Storage::disk('CDrive')->put($filename,$contents);
+                 // Storage::disk('CDrive')->append($filename,$contents);
                 }
+               // $files=File::allFiles(storage_path($filename));
+             //   dd(File::get(storage_path($filename)));
             }
         return view('production.home',compact('notification'));
     }
@@ -87,6 +88,7 @@ class DataController extends Controller
     public function show($id)
     {
         $records = $this->dataservice->viewRecords($id);
+       // dd($records);
         $paymentInfo = $records->pmtInf;
         if ($paymentInfo->pmtMtd == "TRF") {
             $header = $records->grpHdr;
@@ -94,6 +96,7 @@ class DataController extends Controller
 
             foreach ($body as $i) {
                 $record = new Record();
+                $filename=$header->msgId."-Salary.txt";
                 $exists = Record::where('record_id', $i->pmtId->endToEndId)->exists();
                 if (!$exists) {
                     $record->batch_split_id = $header->msgId;
@@ -110,17 +113,49 @@ class DataController extends Controller
                     $record->crediting_agent = $i->cdtrAgt->finInstnId->bic;
                     $record->reference = $i->rmtInf->strd->cdtrRefInf->ref;
                     $record->save();
+                    $contents=$paymentInfo->pmtMtd.",".$header->msgId.",".$paymentInfo->pmtInfId.",".$i->pmtId->endToEndId.",".$paymentInfo->reqdExctnDt.",".$paymentInfo->dbtrAcct->id->iban.",".$paymentInfo->dbtrAgt->finInstnId->bic.",".$i->cdtrAgt->finInstnId->bic.",".$header->initgPty->nm.",".$i->cdtrAcct->id->iban.",".$i->cdtr->nm.",".$i->amt->instdAmt->value.",".$i->amt->instdAmt->ccy.",".$i->rmtInf->strd->cdtrRefInf->ref;
+                    Storage::disk('CDrive')->append($filename,$contents);
                 }
             }
-
-
             return view('production.records', compact('body', 'header', 'paymentInfo'));
         }
        return abort(404);
     }
-public function generateFile($id){
+public function generateFile($id)
+{
+    $records = $this->dataservice->viewRecords($id);
+    // dd($records);
+    $paymentInfo = $records->pmtInf;
+    if ($paymentInfo->pmtMtd == "TRF") {
+        $header = $records->grpHdr;
+        $body = $records->pmtInf->cdtTrfTxInf;
 
+        foreach ($body as $i) {
+            $record = new Record();
+            $filename=$header->msgId."-Salary.txt";
+            $exists = Record::where('record_id', $i->pmtId->endToEndId)->exists();
+            if (!$exists) {
+                $record->batch_split_id = $header->msgId;
+                $record->payment_info_id = $paymentInfo->pmtInfId;
+                $record->record_id = $i->pmtId->endToEndId;
+                $record->initiator = $header->initgPty->nm;
+                $record->debiting_agent = $paymentInfo->dbtrAgt->finInstnId->bic;
+                $record->debit_account = $paymentInfo->dbtrAcct->id->iban;
+                $record->amount = $i->amt->instdAmt->value;
+                $record->currency = $i->amt->instdAmt->ccy;
+                $record->payment_method = $paymentInfo->pmtMtd;
+                $record->beneficiary_name = $i->cdtr->nm;
+                $record->beneficiary_account = $i->cdtrAcct->id->iban;
+                $record->crediting_agent = $i->cdtrAgt->finInstnId->bic;
+                $record->reference = $i->rmtInf->strd->cdtrRefInf->ref;
+                $record->save();
+                $contents=$paymentInfo->pmtMtd.",".$header->msgId.",".$paymentInfo->pmtInfId.",".$i->pmtId->endToEndId.",".$paymentInfo->reqdExctnDt.",".$paymentInfo->dbtrAcct->id->iban.",".$paymentInfo->dbtrAgt->finInstnId->bic.",".$i->cdtrAgt->finInstnId->bic.",".$header->initgPty->nm.",".$i->cdtrAcct->id->iban.",".$i->cdtr->nm.",".$i->amt->instdAmt->value.",".$i->amt->instdAmt->ccy.",".$i->rmtInf->strd->cdtrRefInf->ref;
+                Storage::disk('CDrive')->append($filename,$contents);
+            }
+        }
         return redirect()->route('home')->withSuccessMessage("Batch Id ".$id. " successfully sent to core banking for processing");
+    }
+    return abort(404);
 }
     /**
      * Show the form for editing the specified resource.
