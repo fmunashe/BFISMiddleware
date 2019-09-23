@@ -13,7 +13,7 @@
     </div>
     <div class="panel panel-default">
         <div class="panel-body">
-            <h4>Payment and Transaction Header Information &nbsp;<a href="{{route('generateFile',['id'=>$header->msgId])}}" class="btn btn-info btn-sm fa fa-arrow-circle-down pull-right">&nbsp;Generate File</a> &nbsp;<a href="{{route('home')}}" class="btn btn-info btn-sm fa fa-arrow-circle-left pull-right">&nbsp;Back</a></h4>
+            <h4>Payment and Transaction Header Information &nbsp;<a href="{{route('getResponse',['id'=>$header->msgId])}}" class="btn btn-info btn-sm fa fa-arrow-circle-down pull-right">&nbsp;Get Response File</a> &nbsp;<a href="{{route('home')}}" class="btn btn-info btn-sm fa fa-arrow-circle-left pull-right">&nbsp;Back</a></h4>
             <table class="table table-condensed">
             <tr>
                 <td>Batch Split Id</td>

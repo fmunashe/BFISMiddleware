@@ -19,7 +19,7 @@ class DebitAccountController extends Controller
         if(session('success_message')){
             Alert::success('success', session('success_message'))->persistent('Dismiss');
         }
-      $debits=DebitAccount::all();
+       $debits=DebitAccount::all();
         return view('production.debitAccounts',compact('debits'));
     }
 
@@ -43,6 +43,8 @@ class DebitAccountController extends Controller
     public function store(DebitAccountSuspenseRequest $request)
     {
         //
+        DebitAccount::create($request->all());
+        return redirect()->route('debitAccounts')->withSuccessMessage("Suspense Account Registered Successfully");
     }
 
     /**
@@ -54,6 +56,7 @@ class DebitAccountController extends Controller
     public function show(DebitAccount $debitAccount)
     {
         //
+        return view('production.showAccount',compact('debitAccount'));
     }
 
     /**
@@ -65,6 +68,7 @@ class DebitAccountController extends Controller
     public function edit(DebitAccount $debitAccount)
     {
         //
+        return view('production.editAccount',compact('debitAccount'));
     }
 
     /**
@@ -74,9 +78,11 @@ class DebitAccountController extends Controller
      * @param  \App\DebitAccount  $debitAccount
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, DebitAccount $debitAccount)
+    public function update(DebitAccountSuspenseRequest $request, DebitAccount $debitAccount)
     {
         //
+        $debitAccount->update($request->all());
+        return redirect()->route('debitAccounts')->withSuccessMessage("Record successfully updated");
     }
 
     /**
@@ -88,5 +94,7 @@ class DebitAccountController extends Controller
     public function destroy(DebitAccount $debitAccount)
     {
         //
+        $debitAccount->delete();
+        return redirect()->route('debitAccounts')->withSuccessMessage("Suspense Account Removed Successfully");
     }
 }

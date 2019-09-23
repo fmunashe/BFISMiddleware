@@ -30,7 +30,7 @@
                         <td>{{$debit->bank_code}}</td>
                         <td>{{$debit->bank_name}}</td>
                         <td>{{$debit->bank_suspense_account}}</td>
-                        <td><a href="{{route('removeDebitAccount',['id'=>$debit->id])}}" onclick="confirm('Do you know the implications of removing this account !?')"><span class="btn btn-sm btn-danger fa fa-trash"></span></a></td>
+                        <td><a href="{{route('showDebitAccount',['id'=>$debit->id])}}" class="btn btn-sm btn-success fa fa-eye"></a><a href="{{route('editDebitAccount',['id'=>$debit->id])}}" class="btn btn-sm btn-info fa fa-edit"></a><a href="{{route('removeDebitAccount',['id'=>$debit->id])}}"><span class="btn btn-sm btn-danger fa fa-trash"></span></a></td>
                     </tr>
                 @endforeach
                 </tbody>

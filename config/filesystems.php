@@ -51,6 +51,14 @@ return [
             'driver' => 'local',
             'root' => 'C:\Users\fzihove\Desktop\Salary',
         ],
+        'ResponseDrive' => [
+            'driver' => 'local',
+            'root' => 'C:\Users\fzihove\Desktop\Salary\Response',
+        ],
+        'LogsDrive' => [
+            'driver' => 'local',
+            'root' => 'C:\Users\fzihove\Desktop\Salary\Logs',
+        ],
 
         'public' => [
             'driver' => 'local',
