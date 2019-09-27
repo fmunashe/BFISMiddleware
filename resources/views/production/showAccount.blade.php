@@ -33,7 +33,7 @@
                         <td>{{$debitAccount->bank_suspense_account}}</td>
                         <td>{{$debitAccount->created_at->diffForHumans()}}</td>
                         <td>{{$debitAccount->updated_at}}</td>
-                        <td><a href="{{route('debitAccounts')}}" class="btn btn-sm btn-success fa fa-arrow-circle-left">Back</a></td>
+                        <td><a data-toggle="tooltip" data-placement="right" title="Go Back" href="{{route('debitAccounts')}}" class="btn btn-sm btn-success fa fa-arrow-circle-left">Back</a></td>
                     </tr>
                 </tbody>
             </table>

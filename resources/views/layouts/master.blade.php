@@ -63,8 +63,7 @@
                   <li><a><i class="fa fa-home"></i> Home <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                       <li><a href="{{route('home')}}">Dashboard</a></li>
-                      <li><a href="{{route('debitAccounts')}}">Suspense Accounts</a></li>
-                      <li><a href="index3.html">Dashboard3</a></li>
+                      <li><a href="#">Dashboard3</a></li>
                     </ul>
                   </li>
                   <li><a><i class="fa fa-edit"></i> Accounts <span class="fa fa-chevron-down"></span></a>
@@ -90,15 +89,9 @@
                       <li><a href="calendar.html">Calendar</a></li>
                     </ul>
                   </li>
-                  <li><a><i class="fa fa-table"></i> Tables <span class="fa fa-chevron-down"></span></a>
+                  <li><a><i class="fa fa-bar-chart-o"></i> Reports <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                      <li><a href="tables.html">Tables</a></li>
-                      <li><a href="tables_dynamic.html">Table Dynamic</a></li>
-                    </ul>
-                  </li>
-                  <li><a><i class="fa fa-bar-chart-o"></i> Data Presentation <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                      <li><a href="chartjs.html">Chart JS</a></li>
+                      <li><a href="{{route('localBatches')}}">Batch Records</a></li>
                       <li><a href="chartjs2.html">Chart JS2</a></li>
                       <li><a href="morisjs.html">Moris JS</a></li>
                       <li><a href="echarts.html">ECharts</a></li>
@@ -243,7 +236,7 @@
         <!-- footer content -->
         <footer>
           <div class="pull-right">
-            Agribank - BFIS Middleware by FZ
+            Agribank - BFIS Middleware by Farai Zihove
           </div>
           <div class="clearfix"></div>
         </footer>

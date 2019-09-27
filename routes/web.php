@@ -20,7 +20,7 @@ Auth::routes();
 Route::middleware(['auth'])->group( function() {
     Route::get('/home', 'DataController@index')->name('home');
     Route::get('/home/{id}', 'DataController@show')->name('viewRecords');
-    Route::get('/getResponse/{id}', 'DataController@getResponse')->name('getResponse');
+    Route::get('/excelExport/{id}', 'HomeController@export')->name('excelExport');
     Route::get('/debitAccounts', 'DebitAccountController@index')->name('debitAccounts');
     Route::get('/createDebitAccount', 'DebitAccountController@create')->name('createDebitAccount');
     Route::post('/createDebitAccount', 'DebitAccountController@store')->name('createDebitAccount');
@@ -28,4 +28,6 @@ Route::middleware(['auth'])->group( function() {
     Route::get('/editDebitAccount/{debitAccount}', 'DebitAccountController@edit')->name('editDebitAccount');
     Route::put('/updateDebitAccount/{debitAccount}', 'DebitAccountController@update')->name('updateDebitAccount');
     Route::get('/showDebitAccount/{debitAccount}', 'DebitAccountController@show')->name('showDebitAccount');
+    Route::get('/localBatches','HomeController@index')->name('localBatches');
+    Route::get('/viewLocalRecords/{batch}','HomeController@show')->name('viewLocalRecords');
 });

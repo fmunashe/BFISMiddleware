@@ -44,7 +44,7 @@ class DebitAccountController extends Controller
     {
         //
         DebitAccount::create($request->all());
-        return redirect()->route('debitAccounts')->withSuccessMessage("Suspense Account Registered Successfully");
+        return redirect()->route('debitAccounts')->withSuccessMessage($request->input('bank_name')." Successfully Registered");
     }
 
     /**

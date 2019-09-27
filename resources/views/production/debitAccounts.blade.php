@@ -20,7 +20,9 @@
                     <th>Bank Code</th>
                     <th>Bank Name</th>
                     <th>Suspense Account</th>
+                    <th>&nbsp;</th>
                     <th>Action</th>
+                    <th>&nbsp;</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -30,7 +32,9 @@
                         <td>{{$debit->bank_code}}</td>
                         <td>{{$debit->bank_name}}</td>
                         <td>{{$debit->bank_suspense_account}}</td>
-                        <td><a href="{{route('showDebitAccount',['id'=>$debit->id])}}" class="btn btn-sm btn-success fa fa-eye"></a><a href="{{route('editDebitAccount',['id'=>$debit->id])}}" class="btn btn-sm btn-info fa fa-edit"></a><a href="{{route('removeDebitAccount',['id'=>$debit->id])}}"><span class="btn btn-sm btn-danger fa fa-trash"></span></a></td>
+                        <td><a data-toggle="tooltip" data-placement="right" title="Show" href="{{route('showDebitAccount',['id'=>$debit->id])}}" class="btn btn-sm btn-success fa fa-eye"></a></td>
+                        <td><a data-toggle="tooltip" data-placement="right" title="Edit Account" href="{{route('editDebitAccount',['id'=>$debit->id])}}" class="btn btn-sm btn-info fa fa-edit"></a></td>
+                        <td><a data-toggle="tooltip" data-placement="right" title="Remove Account" href="{{route('removeDebitAccount',['id'=>$debit->id])}}"><span class="btn btn-sm btn-danger fa fa-trash"></span></a></td>
                     </tr>
                 @endforeach
                 </tbody>

@@ -59,6 +59,14 @@ return [
             'driver' => 'local',
             'root' => 'C:\Users\fzihove\Desktop\Salary\Logs',
         ],
+        'AgriplusDrive' => [
+            'driver' => 'local',
+            'root' => 'C:\Users\fzihove\Desktop\Salary\Agriplus',
+        ],
+        'AgriplusResponse' => [
+            'driver' => 'local',
+            'root' => 'C:\Users\fzihove\Desktop\Salary\Agriplus\AgriplusResponse',
+        ],
 
         'public' => [
             'driver' => 'local',

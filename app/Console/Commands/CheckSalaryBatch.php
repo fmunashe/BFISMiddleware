@@ -2,12 +2,15 @@
 
 namespace App\Console\Commands;
 
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use App\DebitAccount;
 use App\Batch;
 use App\Record;
 use Illuminate\Support\Facades\Storage;
 use App\Services\CheckData;
+use Illuminate\Support\Str;
+
 class CheckSalaryBatch extends Command
 {
     /**
@@ -64,7 +67,7 @@ class CheckSalaryBatch extends Command
                     $body = $records->pmtInf->cdtTrfTxInf;
                     foreach ($body as $i) {
                         $record = new Record();
-                        $filename = $header->msgId . "-Salary.txt";
+                        $filename = "BAT".$header->msgId . "TRANS" . $paymentInfo->pmtInfId . ".txt";
                         $exists = Record::where('record_id', $i->pmtId->endToEndId)->exists();
                         if (!$exists) {
                             $record->batch_split_id = $header->msgId;
@@ -81,26 +84,24 @@ class CheckSalaryBatch extends Command
                             $record->crediting_agent = $i->cdtrAgt->finInstnId->bic;
                             $record->reference = $i->rmtInf->strd->cdtrRefInf->ref;
                             $record->save();
-//                          $debitAc=DebitAccount::where('bank_name','=',$paymentInfo->dbtrAgt->finInstnId->bic)->pluck('bank_suspense_account');
-                            $contents = $paymentInfo->pmtMtd . "," . $header->msgId . "," . $paymentInfo->pmtInfId . "," . $i->pmtId->endToEndId . "," . $paymentInfo->reqdExctnDt . "," . $paymentInfo->dbtrAcct->id->iban . "," . $paymentInfo->dbtrAgt->finInstnId->bic . "," . $i->cdtrAgt->finInstnId->bic . "," . $header->initgPty->nm . "," . $i->cdtrAcct->id->iban . "," . $i->cdtr->nm . "," . $i->amt->instdAmt->value . "," . $i->amt->instdAmt->ccy . "," . $i->rmtInf->strd->cdtrRefInf->ref;
-                            Storage::disk('CDrive')->append($filename, $contents);
+//                          $debitAc=DebitAccount::where('bank_code','=',$paymentInfo->dbtrAgt->finInstnId->bic)->pluck('bank_suspense_account');
+                            if(Str::startsWith($i->cdtrAcct->id->iban,"504875")){
+                                $contents = $paymentInfo->pmtMtd . "," . $header->msgId . "," . $paymentInfo->pmtInfId . "," . $i->pmtId->endToEndId . "," . $paymentInfo->reqdExctnDt . "," . $paymentInfo->dbtrAcct->id->iban . "," . $paymentInfo->dbtrAgt->finInstnId->bic . "," . $i->cdtrAgt->finInstnId->bic . "," . $header->initgPty->nm . "," . $i->cdtrAcct->id->iban . "," . $i->cdtr->nm . "," . $i->amt->instdAmt->value . "," . $i->amt->instdAmt->ccy . "," . $i->rmtInf->strd->cdtrRefInf->ref;
+                                Storage::disk('AgriplusDrive')->append($filename, $contents);
+                            }
+                            else {
+                                $contents = $paymentInfo->pmtMtd . "," . $header->msgId . "," . $paymentInfo->pmtInfId . "," . $i->pmtId->endToEndId . "," . $paymentInfo->reqdExctnDt . "," . $paymentInfo->dbtrAcct->id->iban . "," . $paymentInfo->dbtrAgt->finInstnId->bic . "," . $i->cdtrAgt->finInstnId->bic . "," . $header->initgPty->nm . "," . $i->cdtrAcct->id->iban . "," . $i->cdtr->nm . "," . $i->amt->instdAmt->value . "," . $i->amt->instdAmt->ccy . "," . $i->rmtInf->strd->cdtrRefInf->ref;
+                                Storage::disk('CDrive')->append($filename, $contents);
+                            }
                         }
                     }
                 }
-                else{
-                    $filena = "Log File.txt";
-                    Storage::disk('CDrive')->put($filena, "put debit orders code here");
+                elseif($paymentInfo->pmtMtd == "DD"){
+                    $header = $records->grpHdr;
+                    $filename = "BAT".$header->msgId . "TRANS" . $paymentInfo->pmtInfId . ".txt";
+                    Storage::disk('CDrive')->put($filename, "put debit orders code here");
                 }
             }
-            else{
-//                $filena = "Log File.txt";
-//                Storage::disk('CDrive')->append($filena, "There are no batches to process at the moment :".now());
-            }
         }
-        $filena = "Log File.txt";
-        Storage::disk('LogsDrive')->append($filena, "There are no batches to process at the moment :".now());
-
-
-
     }
 }

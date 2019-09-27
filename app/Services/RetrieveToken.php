@@ -8,7 +8,7 @@ class RetrieveToken
 {
 public function getToken(){
     $client=new Client();
-    $username="AGRIBANK";
+    $username="FBC";
     $password="34578901234";
     $authorisation=" Basic YmF6OjEyMzQ1";
     $grant_type="password";

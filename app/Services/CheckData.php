@@ -2,8 +2,11 @@
 
 
 namespace App\Services;
+use Carbon\Carbon;
 use GuzzleHttp\Client;
 use App\Services\RetrieveToken;
+use GuzzleHttp\Exception\RequestException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class CheckData
 {
@@ -35,9 +38,28 @@ class CheckData
                 'Authorization' => "Bearer ".$this->tokenservice->getToken()
             ]
         ])->getBody()->getContents();
-        $re=json_decode($reco);
-        $record=$re;
+        $record=json_decode($reco);
       //dd($record);
         return $record;
+    }
+
+    public function updateNotification($record_id,$split_id,$pmtInfo_Id,$response,$naration){
+        $client=new Client();
+        try {
+            $arr = array('grpHdr'=>array("msgId"=>$split_id,"creDtTm"=>Carbon::now()),"orgnlGrpInfAndSts"=>array('orgnlMsgId'=>$split_id),"orgnlPmtInfAndSts"=>array("orgnlPmtInfId"=>$pmtInfo_Id,"txInfAndSts"=>array('orgnlEndToEndId'=>$record_id,'txSts'=>$response,'stsRsnInf'=>array('addtlInf'=>$naration))));
+            $update = $client->request('PUT', 'https://secure.zimswitch.co.zw/lab/bfis/v1/api/banks/NotificationTransaction/' . $record_id . '/update', [
+                'headers' => [
+                    'accept' => 'application/json',
+                    'Content-Type' => 'application/json',
+                    'Authorization' => "Bearer " . $this->tokenservice->getToken()
+                ],
+                'json' => $arr
+            ])->getBody()->getContents();
+            $result = json_decode($update);
+            return $result;
+        }
+        catch(RequestException $ex){
+            dd($ex);
+        }
     }
 }
