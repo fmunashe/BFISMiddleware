@@ -43,10 +43,10 @@ class CheckData
         return $record;
     }
 
-    public function updateNotification($record_id,$split_id,$pmtInfo_Id,$response,$naration){
+    public function updateNotification($record_id,$split_id,$pmtInfo_Id,$response,$narration){
         $client=new Client();
         try {
-            $arr = array('grpHdr'=>array("msgId"=>$split_id,"creDtTm"=>Carbon::now()),"orgnlGrpInfAndSts"=>array('orgnlMsgId'=>$split_id),"orgnlPmtInfAndSts"=>array("orgnlPmtInfId"=>$pmtInfo_Id,"txInfAndSts"=>array('orgnlEndToEndId'=>$record_id,'txSts'=>$response,'stsRsnInf'=>array('addtlInf'=>$naration))));
+            $arr = array('grpHdr'=>array("msgId"=>$split_id,"creDtTm"=>Carbon::now()),"orgnlGrpInfAndSts"=>array('orgnlMsgId'=>$split_id),"orgnlPmtInfAndSts"=>array("orgnlPmtInfId"=>$pmtInfo_Id,"txInfAndSts"=>array('orgnlEndToEndId'=>$record_id,'txSts'=>$response,'stsRsnInf'=>array('addtlInf'=>$narration))));
             $update = $client->request('PUT', 'https://secure.zimswitch.co.zw/lab/bfis/v1/api/banks/NotificationTransaction/' . $record_id . '/update', [
                 'headers' => [
                     'accept' => 'application/json',

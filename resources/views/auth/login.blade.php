@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Agribank BFIS Middleware</title>
+    <title>ZEPS Middleware</title>
 
     <!-- Bootstrap -->
     <link href="{{asset('vendors/bootstrap/dist/css/bootstrap.min.css')}}" rel="stylesheet">
@@ -31,7 +31,7 @@
           <section class="login_content">
             <form method="POST" action="{{ route('login') }}">
                         @csrf
-              <h1>Login Form</h1>
+              <h1>Zeps Login</h1>
               <div>
               <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus />
                  @error('email')
@@ -63,7 +63,7 @@
                 <br />
 
                 <div>
-                  <h1><i class="fa fa-paw"></i> Agribank BFIS Middleware</h1>
+                  <h1><i class="fa fa-paw"></i>ZEPS Middleware</h1>
                   <p>©2019 All Rights Reserved.</p>
                 </div>
               </div>
@@ -75,7 +75,7 @@
           <section class="login_content">
              <form method="POST" action="{{ route('register') }}">
                         @csrf
-              <h1>Create Account</h1>
+              <h1>Create Zeps Account</h1>
               <div>
                 <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus placeholder="Name">
 
@@ -121,7 +121,7 @@
                 <br />
 
                 <div>
-                  <h1><i class="fa fa-paw"></i> Agribank BFIS Middleware</h1>
+                  <h1><i class="fa fa-paw"></i>ZEPS Middleware</h1>
                   <p>©2019 All Rights Reserved</p>
                 </div>
               </div>

@@ -30,4 +30,7 @@ Route::middleware(['auth'])->group( function() {
     Route::get('/showDebitAccount/{debitAccount}', 'DebitAccountController@show')->name('showDebitAccount');
     Route::get('/localBatches','HomeController@index')->name('localBatches');
     Route::get('/viewLocalRecords/{batch}','HomeController@show')->name('viewLocalRecords');
+    Route::get('/processedBatches','HomeController@processed')->name('processedBatches');
+    Route::get('/pendingBatches','HomeController@pending')->name('pendingBatches');
+    Route::get('/corporateBatches','HomeController@corporateBatches')->name('corporateBatches');
 });

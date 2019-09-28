@@ -34,11 +34,25 @@ class HomeController extends Controller
     }
 
     public function show($batch){
-        $records=Record::where('batch_split_id','=',$batch)->paginate(5);
+        $records=Record::where('batch_split_id','=',$batch)->paginate(25);
         $header=Batch::where('batch_split_id','=',$batch)->first();
         //dd($header);
         return view('production.localRecords',compact('records','header'));
     }
+    public function processed(){
+    $batches=Batch::latest()->where('status','!=',null)->get();
+    return view('production.processedBatches',compact('batches'));
+    }
+    public function pending(){
+    $batches=Batch::latest()->where('status','=',null)->get();
+    return view('production.pendingBatches',compact('batches'));
+    }
+    public function corporateBatches()
+    {
+        $batches = Batch::all()->groupBy('initiator');
+            dd($batches);
+    }
+
     public  function export($id){
         return Excel::download(new RecordsExport(),'Batch-'.$id.'-Records-.xlsx');
     }

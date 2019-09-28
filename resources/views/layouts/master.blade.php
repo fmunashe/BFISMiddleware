@@ -36,7 +36,7 @@
         <div class="col-md-3 left_col">
           <div class="left_col scroll-view">
             <div class="navbar nav_title" style="border: 0;">
-              <a href="{{route('home')}}" class="site_title"><i class="fa fa-paw"></i> <span>BFIS Middleware</span></a>
+              <a href="{{route('home')}}" class="site_title"><i class="fa fa-paw"></i> <span>ZEPS Middleware</span></a>
             </div>
 
             <div class="clearfix"></div>
@@ -92,9 +92,9 @@
                   <li><a><i class="fa fa-bar-chart-o"></i> Reports <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                       <li><a href="{{route('localBatches')}}">Batch Records</a></li>
-                      <li><a href="chartjs2.html">Chart JS2</a></li>
-                      <li><a href="morisjs.html">Moris JS</a></li>
-                      <li><a href="echarts.html">ECharts</a></li>
+                      <li><a href="{{route('processedBatches')}}">Processed Batches</a></li>
+                      <li><a href="{{route('pendingBatches')}}">Pending Batches</a></li>
+                      <li><a href="{{route('corporateBatches')}}">Corporate Batches</a></li>
                       <li><a href="other_charts.html">Other Charts</a></li>
                     </ul>
                   </li>
@@ -236,7 +236,7 @@
         <!-- footer content -->
         <footer>
           <div class="pull-right">
-            Agribank - BFIS Middleware by Farai Zihove
+            Agribank - ZEPS Middleware by Farai Zihove
           </div>
           <div class="clearfix"></div>
         </footer>

@@ -3,7 +3,7 @@
 @section('content')
     <div class="row">
         <div class="col-lg-12">
-            <h3 class="page-header"><i class="fa fa-file-text-o"></i>  Batches History Report</h3>
+            <h3 class="page-header"><i class="fa fa-file-text-o"></i>  Processed Batch History Report</h3>
             <ol class="breadcrumb">
                 <li><i class="fa fa-home"></i><a href="{{route('home')}}">  Home</a> </li>
                 <li><i class="fa fa-folder-open-o"></i> Batches</li>
@@ -32,7 +32,7 @@
                 @foreach($batches as $batch)
                     <tr>
                         <td>{{$batch->batch_split_id}}</td>
-                        <td>{{substr($batch->date,0,16)}}</td>
+                        <td>{{$batch->date}}</td>
                         <td>{{$batch->transactions}}</td>
                         <td>{{$batch->total}}</td>
                         <td>{{$batch->initiator}}</td>
