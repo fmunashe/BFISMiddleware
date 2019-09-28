@@ -3,7 +3,8 @@
 @section('content')
     <div class="row">
         <div class="col-lg-12">
-            <h3 class="page-header"><i class="fa fa-file-text-o"></i>&nbsp;Batch Split Records History</h3>
+            @foreach($records as $record)@endforeach
+            <h3 class="page-header"><i class="fa fa-file-text-o"></i>&nbsp;Batch Split Records Information For {{$header->initiator}} Coming Through {{$record->debiting_agent}}</h3>
             <ol class="breadcrumb">
                 <li><i class="fa fa-home"></i><a href="{{route('home')}}">   Home</a> </li>
                 <li><i class="fa fa-folder-open-o"></i> Notification Records History</li>

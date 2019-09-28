@@ -33,4 +33,5 @@ Route::middleware(['auth'])->group( function() {
     Route::get('/processedBatches','HomeController@processed')->name('processedBatches');
     Route::get('/pendingBatches','HomeController@pending')->name('pendingBatches');
     Route::get('/corporateBatches','HomeController@corporateBatches')->name('corporateBatches');
+    Route::get('/viewCorporateBatches/{batch}','HomeController@individualCorporateBatches')->name('viewCorporateBatches');
 });

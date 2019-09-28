@@ -3,10 +3,11 @@
 @section('content')
     <div class="row">
         <div class="col-lg-12">
-            <h3 class="page-header"><i class="fa fa-file-text-o"></i>  Processed Batch History Report</h3>
+            @foreach($batches as $batch)@endforeach
+            <h3 class="page-header"><i class="fa fa-file-text-o"></i>  Individual Batches For {{$batch->initiator}}<a href="{{route('corporateBatches')}}" class="btn btn-info btn-sm fa fa-arrow-circle-left pull-right">&nbsp;Back</a></h3>
             <ol class="breadcrumb">
                 <li><i class="fa fa-home"></i><a href="{{route('home')}}">  Home</a> </li>
-                <li><i class="fa fa-folder-open-o"></i> Batches</li>
+                <li><i class="fa fa-folder-open-o"></i> Corporate Batches</li>
                 <li><i class="fa fa-file-text-o"></i>   Batch List</li>
             </ol>
         </div>
@@ -40,7 +41,7 @@
                         <td>{{$batch->status}}</td>
                         <td>{{$batch->created_at}}</td>
                         <td>{{($batch->status)!=""?$batch->updated_at:""}}</td>
-                        <td><a href="{{route('viewLocalRecords',['id'=>$batch->batch_split_id])}}"><span class="btn btn-sm btn-success fa fa-eye"></span></a></td>
+                        <td><a data-toggle="tooltip" data-placement="left" title="View" href="{{route('viewLocalRecords',['id'=>$batch->batch_split_id])}}"><span class="btn btn-sm btn-success fa fa-eye"></span></a></td>
                     </tr>
                 @endforeach
                 </tbody>

@@ -32,7 +32,7 @@
                 @foreach($batches as $batch)
                     <tr>
                         <td>{{$batch->batch_split_id}}</td>
-                        <td>{{$batch->date}}</td>
+                        <td>{{substr($batch->date,0,16)}}</td>
                         <td>{{$batch->transactions}}</td>
                         <td>{{$batch->total}}</td>
                         <td>{{$batch->initiator}}</td>

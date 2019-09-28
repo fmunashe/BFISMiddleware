@@ -50,7 +50,11 @@ class HomeController extends Controller
     public function corporateBatches()
     {
         $batches = Batch::all()->groupBy('initiator');
-            dd($batches);
+            return view('production.corporateBatches',compact('batches'));
+    }
+    public function individualCorporateBatches($batch){
+    $batches=Batch::where('initiator',$batch)->orderby('status','ASC')->get();
+    return view('production.corporate',compact('batches'));
     }
 
     public  function export($id){
