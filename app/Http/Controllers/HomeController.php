@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Batch;
 use App\Exports\RecordsExport;
+use App\Http\Requests\UserRequest;
 use App\Record;
+use App\User;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Alert;
@@ -29,6 +31,9 @@ class HomeController extends Controller
      */
     public function index()
     {
+        if (session('success_message')) {
+            Alert::success('success', session('success_message'))->persistent('Dismiss');
+        }
     $batches=Batch::all();
     return view('production.localBatches',compact('batches'));
     }
@@ -39,6 +44,20 @@ class HomeController extends Controller
         //dd($header);
         return view('production.localRecords',compact('records','header'));
     }
+    public function changeProfile(){
+        return view('production.profile');
+    }
+    public function uploadProfile(UserRequest $request,User $user){
+        $input = $request->all();
+        if ($file = $request->File('path')) {
+            $name = $file->getClientOriginalName();
+            $file->move('images', $name);
+            $input['path']=$name;
+        }
+        $user->update(['path'=>$input['path']]);
+        return redirect()->route('localBatches')->withSuccessMessage("Profile Picture Successfully Changed");
+    }
+
     public function processed(){
     $batches=Batch::latest()->where('status','!=',null)->get();
     return view('production.processedBatches',compact('batches'));
@@ -50,7 +69,7 @@ class HomeController extends Controller
     public function corporateBatches()
     {
         $batches = Batch::all()->groupBy('initiator');
-            return view('production.corporateBatches',compact('batches'));
+        return view('production.corporateBatches',compact('batches'));
     }
     public function individualCorporateBatches($batch){
     $batches=Batch::where('initiator',$batch)->orderby('status','ASC')->get();

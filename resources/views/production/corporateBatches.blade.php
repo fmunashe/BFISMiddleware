@@ -18,6 +18,7 @@
                 <tr>
                     <th>Corporate</th>
                     <th>Total Batches</th>
+                    <th>Total Value</th>
                     <th>Action</th>
                 </tr>
                 </thead>
@@ -26,6 +27,7 @@
                     <tr>
                         <td>{{$batch}}</td>
                         <td>{{$corp->count()}}</td>
+                        <td>@foreach($corp as $co)@endforeach{{$corp->sum()}}</td>
                         <td><a data-toggle="tooltip" data-placement="right" title="Show Batches" href="{{route('viewCorporateBatches',['id'=>$batch])}}"><span class="btn btn-sm btn-success fa fa-eye"></span></a></td>
                     </tr>
                 @endforeach

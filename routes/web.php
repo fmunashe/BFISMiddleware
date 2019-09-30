@@ -18,6 +18,8 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::middleware(['auth'])->group( function() {
+    Route::get('/changeProfile','HomeController@changeProfile')->name('changeProfile');
+    Route::put('/uploadProfile/{user}','HomeController@uploadProfile')->name('uploadProfile');
     Route::get('/home', 'DataController@index')->name('home');
     Route::get('/home/{id}', 'DataController@show')->name('viewRecords');
     Route::get('/excelExport/{id}', 'HomeController@export')->name('excelExport');
