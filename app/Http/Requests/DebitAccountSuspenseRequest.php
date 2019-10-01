@@ -25,9 +25,9 @@ class DebitAccountSuspenseRequest extends FormRequest
     {
         return [
             //
-            'bank_code'=>'required',
+            'bank_code'=>'required|unique:debit_accounts',
             'bank_name'=>'required',
-            'bank_suspense_account'=>'required|unique:debit_accounts'
+            'bank_suspense_account'=>'required'
         ];
     }
 }

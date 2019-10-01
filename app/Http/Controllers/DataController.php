@@ -73,6 +73,7 @@ class DataController extends Controller
     public function show($id)
     {
         $records = $this->dataservice->viewRecords($id);
+        dd($records);
         $paymentInfo = $records->pmtInf;
         $header = $records->grpHdr;
         $body = $records->pmtInf->cdtTrfTxInf;

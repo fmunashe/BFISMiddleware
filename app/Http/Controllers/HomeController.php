@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Batch;
+use App\DebitAccount;
 use App\Exports\RecordsExport;
 use App\Http\Requests\UserRequest;
 use App\Record;

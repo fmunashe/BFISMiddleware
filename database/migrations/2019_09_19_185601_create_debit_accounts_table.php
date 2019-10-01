@@ -15,9 +15,9 @@ class CreateDebitAccountsTable extends Migration
     {
         Schema::create('debit_accounts', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('bank_code');
+            $table->string('bank_code')->unique();
             $table->string('bank_name');
-            $table->string('bank_suspense_account')->unique();
+            $table->string('bank_suspense_account');
             $table->timestamps();
         });
     }
