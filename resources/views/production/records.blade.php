@@ -25,7 +25,7 @@
                 <td>Transaction Date</td>
                 <td>{{$header->creDtTm}}</td>
                 <td>payment method</td>
-                <td>{{$paymentInfo->pmtMtd}}</td>
+                <td>{{$paymentInfo->pmtTpInf->ctgyPurp->cd." ".$paymentInfo->pmtMtd}}</td>
             </tr>
             <tr>
                 <td>Total Transactions</td>

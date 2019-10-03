@@ -65,6 +65,11 @@ class CheckSalaryBatch extends Command
                 if ($paymentInfo->pmtMtd == "TRF") {
                     $header = $records->grpHdr;
                     $body = $records->pmtInf->cdtTrfTxInf;
+                    foreach ($body as $agplus){
+                        if(Str::startsWith($agplus->cdtrAcct->id->iban,"5")) {
+                            $AgriplusTotal += $agplus->amt->instdAmt->value;
+                        }
+                    }
                     foreach ($body as $i) {
                         $record = new Record();
                         $filename = "BAT".$header->msgId . "TRANS" . $paymentInfo->pmtInfId . ".txt";
@@ -86,30 +91,53 @@ class CheckSalaryBatch extends Command
                             $record->save();
                             $bank_code=explode('-',$paymentInfo->dbtrAgt->finInstnId->bic);
                             if(Str::startsWith($i->cdtrAcct->id->iban,"5")){
-                                $agriplusSuspense=DebitAccount::where('bank_code','=','Agriplus')->first();
-                                $contents = $paymentInfo->pmtMtd . "," . $header->msgId . "," . $paymentInfo->pmtInfId . "," . $i->pmtId->endToEndId . "," . $paymentInfo->reqdExctnDt . "," . $agriplusSuspense->bank_suspense_account . "," . $paymentInfo->dbtrAgt->finInstnId->bic . "," . $i->cdtrAgt->finInstnId->bic . "," . $header->initgPty->nm . "," . $i->cdtrAcct->id->iban . "," . $i->cdtr->nm . "," . $i->amt->instdAmt->value*100 . "," . $i->amt->instdAmt->ccy . "," . $i->rmtInf->strd->cdtrRefInf->ref.",".$header->ctrlSum;
+                                $contents = $paymentInfo->pmtTpInf->ctgyPurp->cd . "," . $header->msgId . "," . $paymentInfo->pmtInfId . "," . $i->pmtId->endToEndId . "," . $i->cdtrAcct->id->iban . "," . $i->amt->instdAmt->value*100 ;
                                 Storage::disk('AgriplusDrive')->append($filename, $contents);
-                                $AgriplusTotal+=$i->amt->instdAmt->value;
-                                Storage::disk('LogsDrive')->put($filename,$AgriplusTotal);
                             }
                             else {
-                                if ($bank_code[0] == "10") {
-                                    $contents = $paymentInfo->pmtMtd . "," . $header->msgId . "," . $paymentInfo->pmtInfId . "," . $i->pmtId->endToEndId . "," . $paymentInfo->reqdExctnDt . "," . $paymentInfo->dbtrAcct->id->iban . "," . $paymentInfo->dbtrAgt->finInstnId->bic . "," . $i->cdtrAgt->finInstnId->bic . "," . $header->initgPty->nm . "," . $i->cdtrAcct->id->iban . "," . $i->cdtr->nm . "," . $i->amt->instdAmt->value . "," . $i->amt->instdAmt->ccy . "," . $i->rmtInf->strd->cdtrRefInf->ref.",".$header->ctrlSum;
-                                    Storage::disk('CDrive')->append($filename, $contents);
-                                }
-                                else {
-                                    $debitAcc=DebitAccount::where('bank_code','=',$bank_code[0])->first();
-                                    $contents = $paymentInfo->pmtMtd . "," . $header->msgId . "," . $paymentInfo->pmtInfId . "," . $i->pmtId->endToEndId . "," . $paymentInfo->reqdExctnDt . "," . $debitAcc->bank_suspense_account . "," . $paymentInfo->dbtrAgt->finInstnId->bic . "," . $i->cdtrAgt->finInstnId->bic . "," . $header->initgPty->nm . "," . $i->cdtrAcct->id->iban . "," . $i->cdtr->nm . "," . $i->amt->instdAmt->value . "," . $i->amt->instdAmt->ccy . "," . $i->rmtInf->strd->cdtrRefInf->ref.",".$header->ctrlSum;
-                                    Storage::disk('CDrive')->append($filename, $contents);
-                                }
+                                $contents = $paymentInfo->pmtTpInf->ctgyPurp->cd . "," . $header->msgId . "," . $paymentInfo->pmtInfId . "," . $i->pmtId->endToEndId . "," . $paymentInfo->reqdExctnDt . "," . $paymentInfo->dbtrAcct->id->iban . "," . $paymentInfo->dbtrAgt->finInstnId->bic . "," . $i->cdtrAgt->finInstnId->bic . "," . $header->initgPty->nm . "," . $i->cdtrAcct->id->iban . "," . $i->cdtr->nm . "," . $i->amt->instdAmt->value . "," . $i->amt->instdAmt->ccy . "," . $i->rmtInf->strd->cdtrRefInf->ref.",".$header->ctrlSum.",".$AgriplusTotal.","."0";
+                                 Storage::disk('CDrive')->append($filename, $contents);
+//                                $EOP=Str::startsWith($i->pmtId->endToEndId,'EOP');
+//                                if (($bank_code[0] == '10') && (!$EOP)) {
+//                                    $contents = $paymentInfo->pmtMtd . "," . $header->msgId . "," . $paymentInfo->pmtInfId . "," . $i->pmtId->endToEndId . "," . $paymentInfo->reqdExctnDt . "," . $paymentInfo->dbtrAcct->id->iban . "," . $paymentInfo->dbtrAgt->finInstnId->bic . "," . $i->cdtrAgt->finInstnId->bic . "," . $header->initgPty->nm . "," . $i->cdtrAcct->id->iban . "," . $i->cdtr->nm . "," . $i->amt->instdAmt->value . "," . $i->amt->instdAmt->ccy . "," . $i->rmtInf->strd->cdtrRefInf->ref.",".$header->ctrlSum.",".$AgriplusTotal.","."0";
+//                                    Storage::disk('CDrive')->append($filename, $contents);
+//                                }
+//                                else {
+//                                    $debitAcc=DebitAccount::where('bank_code','=',$bank_code[0])->first();
+//                                    $contents = $paymentInfo->pmtMtd . "," . $header->msgId . "," . $paymentInfo->pmtInfId . "," . $->pmtId->endToEndId . "," . $paymentInfo->reqdExctnDt . "," . $debitAcc->bank_suspense_account . "," . $paymentInfo->dbtrAgt->finInstnId->bic . "," . $i->cdtrAgt->finInstnId->bic . "," . $header->initgPty->nm . "," . $i->cdtrAcct->id->iban . "," . $i->cdtr->nm . "," . $i->amt->instdAmt->value . "," . $i->amt->instdAmt->ccy . "," . $i->rmtInf->strd->cdtrRefInf->ref.",".$header->ctrlSum.",".$AgriplusTotal.","."0";
+//                                    Storage::disk('CDrive')->append($filename, $contents);
+//                                }
                             }
-                        }
+                       }
                     }
                 }
                 elseif($paymentInfo->pmtMtd == "DD"){
                     $header = $records->grpHdr;
-                    $filename = "BAT".$header->msgId . "TRANS" . $paymentInfo->pmtInfId . ".txt";
-                    Storage::disk('CDrive')->put($filename, "put debit orders code here");
+                    $body = $records->pmtInf->drctDbtTxInf;
+                    foreach ($body as $k) {
+                        $record = new Record();
+                        $filename = "BAT".$header->msgId . "TRANS" . $paymentInfo->pmtInfId . ".txt";
+                        $exists = Record::where('record_id', $k->pmtId->endToEndId)->exists();
+                        if (!$exists) {
+                            $record->batch_split_id = $header->msgId;
+                            $record->payment_info_id = $paymentInfo->pmtInfId;
+                            $record->record_id = $k->pmtId->endToEndId;
+                            $record->initiator = $header->initgPty->nm;
+                            $record->debiting_agent = $paymentInfo->cdtrAgt->finInstnId->bic;
+                            $record->debit_account = $k->dbtrAcct->id->iban;
+                            $record->amount = $k->instdAmt->value;
+                            $record->currency = $k->instdAmt->ccy;
+                            $record->payment_method = $paymentInfo->pmtMtd;
+                            $record->beneficiary_name = $header->initgPty->nm;
+                            $record->beneficiary_account = $paymentInfo->cdtrAcct->id->iban;
+                            $record->crediting_agent = $paymentInfo->cdtrAgt->finInstnId->bic;
+                            $record->reference = $k->rmtInf->strd->cdtrRefInf->ref;
+                            $record->save();
+                            $contents=$paymentInfo->pmtMtd.",".$header->msgId.",".$paymentInfo->pmtInfId.",".$k->pmtId->endToEndId."," . $paymentInfo->reqdColltnDt.",".$k->dbtrAcct->id->iban.",".$paymentInfo->cdtrAgt->finInstnId->bic.",".$paymentInfo->cdtrAgt->finInstnId->bic.",".$k->dbtr->nm. "," . $paymentInfo->cdtrAcct->id->iban."," . $header->initgPty->nm."," . $k->instdAmt->value .",".$k->instdAmt->ccy.",".$k->rmtInf->strd->cdtrRefInf->ref.",".$header->ctrlSum.","."0".","."0";
+                            Storage::disk('CDrive')->append($filename, $contents);
+                        }
+                    }
+
                 }
             }
         }

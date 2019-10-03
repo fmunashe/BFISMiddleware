@@ -30,8 +30,8 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
-        $schedule->command('check:salary')->everyMinute();
-        $schedule->command('check:response')->everyMinute();
+        $schedule->command('check:salary')->everyMinute()->withoutOverlapping();
+        $schedule->command('check:response')->everyMinute()->withoutOverlapping();
     }
 
     /**

@@ -11,6 +11,7 @@ use App\Services\CheckData;
 use App\Batch;
 use App\Record;
 use Illuminate\Support\Facades\Storage;
+use Psy\Util\Str;
 
 class DataController extends Controller
 {
@@ -54,14 +55,7 @@ class DataController extends Controller
      */
     public function store(Request $request)
     {
-        //
-//        $input = $request->all();
-//        if ($file = $request->File('file')) {
-//            $name = $file->getClientOriginalName();
-//            $file->move('images', $name);
-//            $input['imageColumnNameInDb']=$name;
-//        }
-//        ModelName::create($input);
+
     }
 
     /**
@@ -73,11 +67,18 @@ class DataController extends Controller
     public function show($id)
     {
         $records = $this->dataservice->viewRecords($id);
-        dd($records);
-        $paymentInfo = $records->pmtInf;
         $header = $records->grpHdr;
-        $body = $records->pmtInf->cdtTrfTxInf;
-        return view('production.records', compact('body', 'header', 'paymentInfo'));
+        $paymentInfo = $records->pmtInf;
+        //dd($records->pmtInf->drctDbtTxInf);
+      //  dd($records);
+        if($paymentInfo->pmtMtd=="DD"){
+        $body=$records->pmtInf->drctDbtTxInf;
+        return view('production.debitRecords',compact('body','header','paymentInfo'));
+        }
+        else {
+            $body = $records->pmtInf->cdtTrfTxInf;
+            return view('production.records', compact('body', 'header', 'paymentInfo'));
+        }
     }
 
     public function getResponse($id)
