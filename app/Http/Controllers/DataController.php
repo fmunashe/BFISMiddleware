@@ -69,8 +69,6 @@ class DataController extends Controller
         $records = $this->dataservice->viewRecords($id);
         $header = $records->grpHdr;
         $paymentInfo = $records->pmtInf;
-        //dd($records->pmtInf->drctDbtTxInf);
-      //  dd($records);
         if($paymentInfo->pmtMtd=="DD"){
         $body=$records->pmtInf->drctDbtTxInf;
         return view('production.debitRecords',compact('body','header','paymentInfo'));

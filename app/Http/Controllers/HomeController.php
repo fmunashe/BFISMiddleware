@@ -42,8 +42,14 @@ class HomeController extends Controller
     public function show($batch){
         $records=Record::where('batch_split_id','=',$batch)->paginate(25);
         $header=Batch::where('batch_split_id','=',$batch)->first();
-        //dd($header);
-        return view('production.localRecords',compact('records','header'));
+        if($header->payment_method=="DD")
+        {
+        return view('production.localDebitRecords',compact('records','header'));
+        }
+        else
+            {
+            return view('production.localRecords',compact('records','header'));
+            }
     }
     public function changeProfile(){
         return view('production.profile');

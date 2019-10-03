@@ -83,7 +83,7 @@ class CheckSalaryBatch extends Command
                             $record->debit_account = $paymentInfo->dbtrAcct->id->iban;
                             $record->amount = $i->amt->instdAmt->value;
                             $record->currency = $i->amt->instdAmt->ccy;
-                            $record->payment_method = $paymentInfo->pmtMtd;
+                            $record->payment_method = $paymentInfo->pmtTpInf->ctgyPurp->cd." ".$paymentInfo->pmtMtd;
                             $record->beneficiary_name = $i->cdtr->nm;
                             $record->beneficiary_account = $i->cdtrAcct->id->iban;
                             $record->crediting_agent = $i->cdtrAgt->finInstnId->bic;
@@ -91,22 +91,26 @@ class CheckSalaryBatch extends Command
                             $record->save();
                             $bank_code=explode('-',$paymentInfo->dbtrAgt->finInstnId->bic);
                             if(Str::startsWith($i->cdtrAcct->id->iban,"5")){
+                                //look the account up in postilion if its there put response if not put dummy data in both agriplus and CDrive
                                 $contents = $paymentInfo->pmtTpInf->ctgyPurp->cd . "," . $header->msgId . "," . $paymentInfo->pmtInfId . "," . $i->pmtId->endToEndId . "," . $i->cdtrAcct->id->iban . "," . $i->amt->instdAmt->value*100 ;
                                 Storage::disk('AgriplusDrive')->append($filename, $contents);
                             }
                             else {
-                                $contents = $paymentInfo->pmtTpInf->ctgyPurp->cd . "," . $header->msgId . "," . $paymentInfo->pmtInfId . "," . $i->pmtId->endToEndId . "," . $paymentInfo->reqdExctnDt . "," . $paymentInfo->dbtrAcct->id->iban . "," . $paymentInfo->dbtrAgt->finInstnId->bic . "," . $i->cdtrAgt->finInstnId->bic . "," . $header->initgPty->nm . "," . $i->cdtrAcct->id->iban . "," . $i->cdtr->nm . "," . $i->amt->instdAmt->value . "," . $i->amt->instdAmt->ccy . "," . $i->rmtInf->strd->cdtrRefInf->ref.",".$header->ctrlSum.",".$AgriplusTotal.","."0";
-                                 Storage::disk('CDrive')->append($filename, $contents);
-//                                $EOP=Str::startsWith($i->pmtId->endToEndId,'EOP');
-//                                if (($bank_code[0] == '10') && (!$EOP)) {
-//                                    $contents = $paymentInfo->pmtMtd . "," . $header->msgId . "," . $paymentInfo->pmtInfId . "," . $i->pmtId->endToEndId . "," . $paymentInfo->reqdExctnDt . "," . $paymentInfo->dbtrAcct->id->iban . "," . $paymentInfo->dbtrAgt->finInstnId->bic . "," . $i->cdtrAgt->finInstnId->bic . "," . $header->initgPty->nm . "," . $i->cdtrAcct->id->iban . "," . $i->cdtr->nm . "," . $i->amt->instdAmt->value . "," . $i->amt->instdAmt->ccy . "," . $i->rmtInf->strd->cdtrRefInf->ref.",".$header->ctrlSum.",".$AgriplusTotal.","."0";
-//                                    Storage::disk('CDrive')->append($filename, $contents);
-//                                }
-//                                else {
-//                                    $debitAcc=DebitAccount::where('bank_code','=',$bank_code[0])->first();
-//                                    $contents = $paymentInfo->pmtMtd . "," . $header->msgId . "," . $paymentInfo->pmtInfId . "," . $->pmtId->endToEndId . "," . $paymentInfo->reqdExctnDt . "," . $debitAcc->bank_suspense_account . "," . $paymentInfo->dbtrAgt->finInstnId->bic . "," . $i->cdtrAgt->finInstnId->bic . "," . $header->initgPty->nm . "," . $i->cdtrAcct->id->iban . "," . $i->cdtr->nm . "," . $i->amt->instdAmt->value . "," . $i->amt->instdAmt->ccy . "," . $i->rmtInf->strd->cdtrRefInf->ref.",".$header->ctrlSum.",".$AgriplusTotal.","."0";
-//                                    Storage::disk('CDrive')->append($filename, $contents);
-//                                }
+                                $EOP=Str::startsWith($i->pmtId->endToEndId,'EOP');
+                                if ($bank_code[0] == '10') {
+                                    if($EOP){
+                                    }
+                                    else {
+                                        $contents = $paymentInfo->pmtTpInf->ctgyPurp->cd . "," . $header->msgId . "," . $paymentInfo->pmtInfId . "," . $i->pmtId->endToEndId . "," . $paymentInfo->reqdExctnDt . "," . $paymentInfo->dbtrAcct->id->iban . "," . $paymentInfo->dbtrAgt->finInstnId->bic . "," . $i->cdtrAgt->finInstnId->bic . "," . $header->initgPty->nm . "," . $i->cdtrAcct->id->iban . "," . $i->cdtr->nm . "," . $i->amt->instdAmt->value . "," . $i->amt->instdAmt->ccy . "," . $i->rmtInf->strd->cdtrRefInf->ref . "," . $header->ctrlSum . "," . $AgriplusTotal . "," . "0";
+                                        Storage::disk('CDrive')->append($filename, $contents);
+                                    }
+                                }
+                                else {
+                                    $debitAcc=DebitAccount::where('bank_code','=',$bank_code[0])->first();
+                                    $contents = $paymentInfo->pmtTpInf->ctgyPurp->cd . "," . $header->msgId . "," . $paymentInfo->pmtInfId . "," . $i->pmtId->endToEndId . "," . $paymentInfo->reqdExctnDt . "," . $debitAcc->bank_suspense_account . "," . $paymentInfo->dbtrAgt->finInstnId->bic . "," . $i->cdtrAgt->finInstnId->bic . "," . $header->initgPty->nm . "," . $i->cdtrAcct->id->iban . "," . $i->cdtr->nm . "," . $i->amt->instdAmt->value . "," . $i->amt->instdAmt->ccy . "," . $i->rmtInf->strd->cdtrRefInf->ref.",".$header->ctrlSum.",".$AgriplusTotal.","."0";
+                                    Storage::disk('CDrive')->append($filename, $contents);
+                                }
+
                             }
                        }
                     }
@@ -123,7 +127,7 @@ class CheckSalaryBatch extends Command
                             $record->payment_info_id = $paymentInfo->pmtInfId;
                             $record->record_id = $k->pmtId->endToEndId;
                             $record->initiator = $header->initgPty->nm;
-                            $record->debiting_agent = $paymentInfo->cdtrAgt->finInstnId->bic;
+                            $record->debiting_agent = $k->dbtr->nm;//$paymentInfo->cdtrAgt->finInstnId->bic
                             $record->debit_account = $k->dbtrAcct->id->iban;
                             $record->amount = $k->instdAmt->value;
                             $record->currency = $k->instdAmt->ccy;
