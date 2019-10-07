@@ -50,9 +50,9 @@ class CheckResponse extends Command
             $records = $this->dataservice->viewRecords($i->msgId);
             $paymentInfo = $records->pmtInf;
             $header = $records->grpHdr;
-            if ($paymentInfo->pmtMtd == "TRF") {
+//            if ($paymentInfo->pmtMtd == "TRF") {
                 $filename = "BAT".$header->msgId . "TRANS" . $paymentInfo->pmtInfId . ".txt";
-                $status = "Batch Processed and Remote API updated";
+                $status = "Batch Processed";
                 $AgricashPath = Storage::disk('ResponseDrive')->getDriver()->getAdapter()->getPathPrefix() . $filename;
                 $AgriplusPath = Storage::disk('AgriplusResponse')->getDriver()->getAdapter()->getPathPrefix() . $filename;
                 if (file_exists($AgricashPath)) {
@@ -74,9 +74,7 @@ class CheckResponse extends Command
                     storage::disk('ResponseDrive')->delete($filename);
                    // storage::disk('LogsDrive')->append($filename,"something happened :".Carbon::now());
                 }
-//                else {
-//                    Storage::disk('LogsDrive')->append($filename, "Response file for this batch not yet available :" . Carbon::now());
-//                }
+
                 if (file_exists($AgriplusPath)) {
                     $content = file_get_contents($AgriplusPath);
                     $individualEntry = explode("\r\n", $content);
@@ -88,15 +86,11 @@ class CheckResponse extends Command
                         ]);
                         $this->dataservice->updateNotification($data[2], $header->msgId, $paymentInfo->pmtInfId, $data[3], $data[4]);
                     }
+                    Batch::where('batch_split_id', $batch[0])->update([
+                        'status' => $status
+                    ]);
                     storage::disk('AgriplusResponse')->delete($filename);
                 }
-//                else {
-//                    Storage::disk('LogsDrive')->append($filename, "Response file for this batch not yet available :" . Carbon::now());
-//                }
-            } elseif ($paymentInfo->pmtMtd == "DD") {
-
-            }
-
         }
     }
 }

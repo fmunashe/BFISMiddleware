@@ -3,15 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Batch;
-use App\DebitAccount;
 use App\Exports\RecordsExport;
 use App\Http\Requests\UserRequest;
 use App\Record;
 use App\User;
-use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Alert;
 use Excel;
+use App\Charts\SampleChart;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class HomeController extends Controller
 {
@@ -35,20 +36,37 @@ class HomeController extends Controller
         if (session('success_message')) {
             Alert::success('success', session('success_message'))->persistent('Dismiss');
         }
-    $batches=Batch::all();
+    $batches=Batch::latest()->get();
     return view('production.localBatches',compact('batches'));
     }
 
+    public function balance(Request $request){
+        dd($request);
+//    $loginData=$request->validate([
+//        'name'=>'required',
+//        'password'=>'required',
+//    ]);
+//    if(!auth()->attempt($loginData)){
+//        return response(['message'=>'Invalid Credentials']);
+//    }
+//    $accessToken =auth()->user()->createToken('authToken')->accessToken;
+//    $acc=$request->input('account');
+//   // $accountDetails=DB::connection('postilion')->select("select * from pc_cards_3_A where pan=$acc");
+//    return response(['account_details'=>$acc,'access_token'=>$accessToken]);
+    }
+
     public function show($batch){
-        $records=Record::where('batch_split_id','=',$batch)->paginate(25);
+        $records=Record::where('batch_split_id','=',$batch)->orderby('response')->paginate(25);
         $header=Batch::where('batch_split_id','=',$batch)->first();
+        $successful=Record::where('batch_split_id','=',$batch)->where( 'response','=','ACWC')->count();
+        $failed=Record::where('batch_split_id','=',$batch)->where( 'response','=','RJCT')->count();
         if($header->payment_method=="DD")
         {
-        return view('production.localDebitRecords',compact('records','header'));
+        return view('production.localDebitRecords',compact('records','header','successful','failed'));
         }
         else
             {
-            return view('production.localRecords',compact('records','header'));
+            return view('production.localRecords',compact('records','header','successful','failed'));
             }
     }
     public function changeProfile(){
@@ -82,8 +100,19 @@ class HomeController extends Controller
     $batches=Batch::where('initiator',$batch)->orderby('status','ASC')->get();
     return view('production.corporate',compact('batches'));
     }
-
+public function graphs(){
+    $processed = Batch::where('status','!=',null)->count();
+    $pending = Batch::where('status','=',null)->count();
+    $chart = new SampleChart;
+    $chart->labels(['Processed','Pending']);
+    $dataset = $chart->dataset('','doughnut',[$processed,$pending]);
+    $dataset->backgroundColor(collect(['#FF0000','#007ED6','#7f7fd5','#ad5389','#3c1053']));
+    $dataset->color(collect([ '#FF0000','#007ED6','#7f7fd5','#ad5389','#3c1053']));
+    $chart->loaderColor('#32ff7e');
+    return view('production.graphs',compact('chart'));
+}
     public  function export($id){
         return Excel::download(new RecordsExport(),'Batch-'.$id.'-Records-.xlsx');
     }
+
 }

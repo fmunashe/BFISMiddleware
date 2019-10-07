@@ -40,7 +40,7 @@
                         <td>{{$batch->status}}</td>
                         <td>{{$batch->created_at}}</td>
                         <td>{{($batch->status)!=""?$batch->updated_at:""}}</td>
-                        <td><a href="{{route('viewLocalRecords',['id'=>$batch->batch_split_id])}}"><span class="btn btn-sm btn-success fa fa-eye"></span></a></td>
+                        <td><a data-toggle="tooltip" data-placement="left" title="Show Records" href="{{route('viewLocalRecords',['id'=>$batch->batch_split_id])}}"><span class="btn btn-sm btn-success fa fa-eye"></span></a></td>
                     </tr>
                 @endforeach
                 </tbody>

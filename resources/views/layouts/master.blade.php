@@ -84,9 +84,9 @@
                       <li><a href="{{route('corporateBatches')}}">Batches By Corporate</a></li>
                     </ul>
                   </li>
-                  <li><a><i class="fa fa-clone"></i>Layouts <span class="fa fa-chevron-down"></span></a>
+                  <li><a><i class="fa fa-bars"></i>Graphs <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                      <li><a href="fixed_sidebar.html">Fixed Sidebar</a></li>
+                      <li><a href="#">Graph Sample</a></li>
                     </ul>
                   </li>
                 </ul>

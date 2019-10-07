@@ -47,6 +47,12 @@
                     <td>Credit Agent</td>
                     <td>{{$record->crediting_agent}}</td>
                 </tr>
+                <tr>
+                    <td>Successful</td>
+                    <td>{{$successful}}</td>
+                    <td>Failed</td>
+                    <td>{{$failed}}</td>
+                </tr>
             </table>
             <table class="table table-hover table-condensed table-striped jambo_table bulk_action">
                 <thead>

@@ -14,7 +14,7 @@
     </div>
     <div class="panel panel-default">
         <div class="panel-body">
-            <h4>Payment and Transaction Header Information &nbsp;<a href="{{route('excelExport',['id'=>$header->batch_split_id])}}" class="btn btn-info btn-sm fa fa-arrow-circle-down pull-right">&nbsp;Excel Export</a> &nbsp;<a href="{{route('localBatches')}}" class="btn btn-info btn-sm fa fa-arrow-circle-left pull-right">&nbsp;Back</a></h4>
+            <h4>Payment and Transaction Header Information &nbsp;<a href="{{route('localBatches')}}" class="btn btn-info btn-sm fa fa-arrow-circle-left pull-right">&nbsp;Back</a></h4>
             <table class="table table-condensed">
                 @foreach($records as $record)
                 @endforeach
@@ -48,6 +48,12 @@
                     <td>Debiting Agent</td>
                     <td>{{$record->debiting_agent}}</td>
                 </tr>
+                    <tr>
+                        <td>Successful</td>
+                        <td>{{($record->naration)!=""?$successful:""}}</td>
+                        <td>Failed</td>
+                        <td>{{($record->naration)!=""?$failed:""}}</td>
+                    </tr>
             </table>
             <table class="table table-hover table-condensed table-striped jambo_table bulk_action">
                 <thead>

@@ -90,6 +90,18 @@ return [
             'prefix' => '',
             'prefix_indexes' => true,
         ],
+        'postilion' => [
+            'driver' => 'sqlsrv',
+            'url' => env('DATABASE_URL'),
+            'host' => env('EX_DB_HOST', '192.168.0.91'),
+            'port' => env('EX_DB_PORT', '1433'),
+            'database' => env('EX_DB_DATABASE', 'postcard'),
+            'username' => env('EX_DB_USERNAME', 'smsalerts'),
+            'password' => env('EX_DB_PASSWORD', 'Password@1'),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+        ],
 
     ],
 
