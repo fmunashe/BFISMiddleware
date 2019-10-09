@@ -38,6 +38,7 @@ class CheckData
                 'Authorization' => "Bearer ".$this->tokenservice->getToken()
             ]
         ])->getBody()->getContents();
+        ini_set('memory_limit', '-1');
         $record=json_decode($reco);
       //dd($record);
         return $record;
@@ -55,6 +56,7 @@ class CheckData
                 ],
                 'json' => $arr
             ])->getBody()->getContents();
+            ini_set('memory_limit', '-1');
             $result = json_decode($update);
             return $result;
         }

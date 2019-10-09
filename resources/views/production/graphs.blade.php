@@ -13,12 +13,11 @@
     </div>
     <div class="panel panel-default">
         <div class="panel-body">
-
-        </div>
         <div class="col-lg-6 col-xs-8">
             {!! $chart->container() !!}
             <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js" charset="utf-8"></script>
             {!! $chart->script() !!}
+        </div>
         </div>
     </div>
 @endsection

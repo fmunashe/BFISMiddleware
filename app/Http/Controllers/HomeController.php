@@ -103,11 +103,15 @@ class HomeController extends Controller
 public function graphs(){
     $processed = Batch::where('status','!=',null)->count();
     $pending = Batch::where('status','=',null)->count();
+    $below100=Batch::where('transactions','<',100)->count();
+    $below200=Batch::where('transactions','<',200)->where('transactions','>',100)->count();
+    $below400=Batch::where('transactions','<',400)->where('transactions','>',200)->count();
     $chart = new SampleChart;
-    $chart->labels(['Processed','Pending']);
-    $dataset = $chart->dataset('','doughnut',[$processed,$pending]);
-    $dataset->backgroundColor(collect(['#FF0000','#007ED6','#7f7fd5','#ad5389','#3c1053']));
-    $dataset->color(collect([ '#FF0000','#007ED6','#7f7fd5','#ad5389','#3c1053']));
+
+    $chart->labels(['Processed','Pending','< 100 trans','< 200 trans','< 400 trans']);
+    $dataset = $chart->dataset('','bar',[$processed,$pending,$below100,$below200,$below400]);
+    $dataset->backgroundColor(collect(['#FF0000','#007ED6','#7f7fd5','#ad5389','#3c1053','#a8ff78','#78ffd6']));
+    $dataset->color(collect([ '#FF0000','#007ED6','#7f7fd5','#ad5389','#3c1053','#a8ff78','#78ffd6']));
     $chart->loaderColor('#32ff7e');
     return view('production.graphs',compact('chart'));
 }
