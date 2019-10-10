@@ -6,12 +6,14 @@ use App\Batch;
 use App\Exports\RecordsExport;
 use App\Http\Requests\UserRequest;
 use App\Record;
+use App\Services\CheckData;
 use App\User;
 use Illuminate\Http\Request;
 use Alert;
 use Excel;
 use App\Charts\SampleChart;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class HomeController extends Controller
@@ -21,9 +23,11 @@ class HomeController extends Controller
      *
      * @return void
      */
-    public function __construct()
+    protected $dataservice;
+    public function __construct(CheckData $dataservice)
     {
         $this->middleware('auth');
+        $this->dataservice=$dataservice;
     }
 
     /**
@@ -36,8 +40,47 @@ class HomeController extends Controller
         if (session('success_message')) {
             Alert::success('success', session('success_message'))->persistent('Dismiss');
         }
-    $batches=Batch::latest()->get();
-    return view('production.localBatches',compact('batches'));
+
+
+//        $notification = $this->dataservice->checkNotifications();
+//        foreach ($notification as $i) {
+//            $records = $this->dataservice->viewRecords($i->msgId);
+//            $paymentInfo = $records->pmtInf;
+//            $header = $records->grpHdr;
+////            if ($paymentInfo->pmtMtd == "TRF") {
+//            $filename = "BAT" . $header->msgId . "TRANS" . $paymentInfo->pmtInfId . ".txt";
+//            $status = "Batch Processed";
+//            $AgricashPath = Storage::disk('ResponseDrive')->getDriver()->getAdapter()->getPathPrefix() . $filename;
+//            if (file_exists($AgricashPath)) {
+//                $content = file_get_contents($AgricashPath);
+//                $individualEntry = explode("\n", $content);
+//                $batch = explode(',', $individualEntry[0]);
+//                for ($j = 0; $j < count($individualEntry); $j++) {
+//                    $data = explode(',', $individualEntry[$j]);
+//                    try {
+//                        Record::where('record_id', $data[2])->update([
+//                            'response' => $data[3],
+//                            'naration' => $data[4]
+//                        ]);
+//                    // echo "logic to push response to api goes here";
+//                    $this->dataservice->updateNotification($data[2], $header->msgId, $paymentInfo->pmtInfId, $data[3], $data[4]);
+//                    }
+//                    catch(\Exception $ex){
+//
+//                    }
+//                }
+//                Batch::where('batch_split_id', $batch[0])->update([
+//                    'status' => $status
+//                ]);
+//                storage::disk('ResponseDrive')->delete($filename);
+//
+//                // storage::disk('LogsDrive')->append($filename,"something happened :".Carbon::now());
+//            }
+//
+//
+            $batches = Batch::latest()->get();
+            return view('production.localBatches', compact('batches'));
+//        }
     }
 
     public function balance(Request $request){
@@ -108,8 +151,8 @@ public function graphs(){
     $below400=Batch::where('transactions','<',400)->where('transactions','>',200)->count();
     $chart = new SampleChart;
 
-    $chart->labels(['Processed','Pending','< 100 trans','< 200 trans','< 400 trans']);
-    $dataset = $chart->dataset('','bar',[$processed,$pending,$below100,$below200,$below400]);
+    $chart->labels(['Pending','Processed']);
+    $dataset = $chart->dataset('','bar',[$pending,$processed]);
     $dataset->backgroundColor(collect(['#FF0000','#007ED6','#7f7fd5','#ad5389','#3c1053','#a8ff78','#78ffd6']));
     $dataset->color(collect([ '#FF0000','#007ED6','#7f7fd5','#ad5389','#3c1053','#a8ff78','#78ffd6']));
     $chart->loaderColor('#32ff7e');

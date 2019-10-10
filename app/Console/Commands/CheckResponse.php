@@ -57,16 +57,21 @@ class CheckResponse extends Command
                 $AgriplusPath = Storage::disk('AgriplusResponse')->getDriver()->getAdapter()->getPathPrefix() . $filename;
                 if (file_exists($AgricashPath)) {
                     $content = file_get_contents($AgricashPath);
-                    $individualEntry = explode("\r\n", $content);
+                    $individualEntry = explode("\n", $content);
                     $batch = explode(',', $individualEntry[0]);
                     for ($j = 0; $j < count($individualEntry); $j++) {
                         $data = explode(',', $individualEntry[$j]);
-                        Record::where('record_id', $data[2])->update([
-                            'response' => $data[3],
-                            'naration' => $data[4]
-                        ]);
-                        // echo "logic to push response to api goes here";
-                        $this->dataservice->updateNotification($data[2], $header->msgId, $paymentInfo->pmtInfId, $data[3], $data[4]);
+                        try {
+                            Record::where('record_id', $data[2])->update([
+                                'response' => $data[3],
+                                'naration' => $data[4]
+                            ]);
+                            // echo "logic to push response to api goes here";
+                            $this->dataservice->updateNotification($data[2], $header->msgId, $paymentInfo->pmtInfId, $data[3], $data[4]);
+                        }
+                        catch(\Exception $ex){
+
+                        }
                     }
                     Batch::where('batch_split_id', $batch[0])->update([
                         'status' => $status
@@ -77,14 +82,19 @@ class CheckResponse extends Command
 
                 if (file_exists($AgriplusPath)) {
                     $content = file_get_contents($AgriplusPath);
-                    $individualEntry = explode("\r\n", $content);
+                    $individualEntry = explode("\n", $content);
                     for ($j = 0; $j < count($individualEntry); $j++) {
                         $data = explode(',', $individualEntry[$j]);
-                        Record::where('record_id', $data[2])->update([
-                            'response' => $data[3],
-                            'naration' => $data[4]
-                        ]);
-                        $this->dataservice->updateNotification($data[2], $header->msgId, $paymentInfo->pmtInfId, $data[3], $data[4]);
+                        try {
+                            Record::where('record_id', $data[2])->update([
+                                'response' => $data[3],
+                                'naration' => $data[4]
+                            ]);
+                            $this->dataservice->updateNotification($data[2], $header->msgId, $paymentInfo->pmtInfId, $data[3], $data[4]);
+                        }
+                        catch(\Exception $ex){
+
+                        }
                     }
                     Batch::where('batch_split_id', $batch[0])->update([
                         'status' => $status
