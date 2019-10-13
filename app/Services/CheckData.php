@@ -61,7 +61,6 @@ class CheckData
             return $result;
         }
         catch(RequestException $ex){
-            dd($ex);
         }
     }
 }

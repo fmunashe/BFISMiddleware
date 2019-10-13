@@ -37,4 +37,5 @@ Route::middleware(['auth'])->group( function() {
     Route::get('/corporateBatches','HomeController@corporateBatches')->name('corporateBatches');
     Route::get('/viewCorporateBatches/{batch}','HomeController@individualCorporateBatches')->name('viewCorporateBatches');
     Route::get('/graphs','HomeController@graphs')->name('graphs');
+    Route::get('/checkNotifications','HomeController@DataNotifications')->name('CheckNotifications');
 });

@@ -32,6 +32,7 @@ class Kernel extends ConsoleKernel
         //          ->hourly();
         $schedule->command('check:salary')->everyMinute();
         $schedule->command('check:response')->everyMinute();
+        $schedule->command('post:response')->everyMinute();
     }
 
     /**

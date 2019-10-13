@@ -23,7 +23,7 @@ class CheckResponse extends Command
      *
      * @var string
      */
-    protected $description = 'Service to check for processed responses and pass them to BFIS API';
+    protected $description = 'Service to check for processed responses and log them to database';
 
     /**
      * Create a new command instance.
@@ -45,16 +45,43 @@ class CheckResponse extends Command
     public function handle()
     {
         //
+ //           set_time_limit(0);
+//            $status = "Batch Processed";
+//            $files=Storage::disk('ResponseDrive')->files();
+//            for ($i=0;$i<count($files);$i++) {
+//                $path = Storage::disk('ResponseDrive')->getDriver()->getAdapter()->getPathPrefix() . $files[$i];
+//                $content = file_get_contents($path);
+//                $individualEntry = explode("\n", $content);
+//                for ($j = 0; $j < count($individualEntry); $j++) {
+//                    $data = explode(',', $individualEntry[$j]);
+//                    try {
+//                          Record::where('record_id', $data[2])->update([
+//                                'response' => $data[3],
+//                                'naration' => $data[4]
+//                            ]);
+//                        $this->dataservice->updateNotification($data[2], $data[0], $data[1], $data[3], $data[4]);
+//                    } catch (\Exception $ex) {
+//                    }
+//                }
+//                    Batch::where('batch_split_id', $batch[0])->update([
+//                        'status' => $status
+//                    ]);
+//                storage::disk('ResponseDrive')->delete($files[$i]);
+//            }
+
+
+
+
+
+
         $notification = $this->dataservice->checkNotifications();
         foreach ($notification as $i) {
             $records = $this->dataservice->viewRecords($i->msgId);
             $paymentInfo = $records->pmtInf;
             $header = $records->grpHdr;
-//            if ($paymentInfo->pmtMtd == "TRF") {
                 $filename = "BAT".$header->msgId . "TRANS" . $paymentInfo->pmtInfId . ".txt";
                 $status = "Batch Processed";
                 $AgricashPath = Storage::disk('ResponseDrive')->getDriver()->getAdapter()->getPathPrefix() . $filename;
-                $AgriplusPath = Storage::disk('AgriplusResponse')->getDriver()->getAdapter()->getPathPrefix() . $filename;
                 if (file_exists($AgricashPath)) {
                     $content = file_get_contents($AgricashPath);
                     $individualEntry = explode("\n", $content);
@@ -77,29 +104,6 @@ class CheckResponse extends Command
                         'status' => $status
                     ]);
                     storage::disk('ResponseDrive')->delete($filename);
-                   // storage::disk('LogsDrive')->append($filename,"something happened :".Carbon::now());
-                }
-
-                if (file_exists($AgriplusPath)) {
-                    $content = file_get_contents($AgriplusPath);
-                    $individualEntry = explode("\n", $content);
-                    for ($j = 0; $j < count($individualEntry); $j++) {
-                        $data = explode(',', $individualEntry[$j]);
-                        try {
-                            Record::where('record_id', $data[2])->update([
-                                'response' => $data[3],
-                                'naration' => $data[4]
-                            ]);
-                            $this->dataservice->updateNotification($data[2], $header->msgId, $paymentInfo->pmtInfId, $data[3], $data[4]);
-                        }
-                        catch(\Exception $ex){
-
-                        }
-                    }
-                    Batch::where('batch_split_id', $batch[0])->update([
-                        'status' => $status
-                    ]);
-                    storage::disk('AgriplusResponse')->delete($filename);
                 }
         }
     }
